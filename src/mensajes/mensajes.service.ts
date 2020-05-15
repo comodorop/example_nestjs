@@ -11,7 +11,7 @@ export class MensajesService {
     private readonly mensajeRepository: Repository<Mensaje>,
   ) {}
 
-  async getAll() {
+  async getAll(): Promise<Mensaje[]> {
     return await this.mensajeRepository.find();
   }
 
@@ -19,13 +19,13 @@ export class MensajesService {
     const nuevo = new Mensaje();
     nuevo.mensaje = mensaje.mensaje;
     nuevo.nick = mensaje.nick;
-    return await this.mensajeRepository.create(nuevo);
+    return await this.mensajeRepository.save(nuevo);
   }
 
   async updateMensaje(id: number, mensaje: CreateDto) {
     const mensajeUpdate = await this.mensajeRepository.findOne(id);
     mensajeUpdate.mensaje = mensaje.mensaje;
-    mensajeUpdate.nick = mensaje.mensaje;
+    mensajeUpdate.nick = mensaje.nick;
     return await this.mensajeRepository.save(mensajeUpdate);
   }
 
