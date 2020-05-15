@@ -1,25 +1,71 @@
-import { Controller, Post, Body, Get, Put, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Put,
+  Delete,
+  Res,
+  HttpStatus,
+  Param,
+} from '@nestjs/common';
 import { CreateDto } from './dto/create-dto';
+import { MensajesService } from './mensajes.service';
+import { response } from 'express';
 
 @Controller('mensajes')
 export class MensajesController {
+  constructor(private mensajeServices: MensajesService) {}
+
   @Post()
-  create(@Body() createMsgDto: CreateDto) {
-    return `Mensaje creado`;
+  create(@Body() createMsgDto: CreateDto, @Res() response) {
+    this.mensajeServices
+      .create(createMsgDto)
+      .then(res => {
+        response.status(HttpStatus.CREATED).json(res);
+      })
+      .catch(err => {
+        response.status(HttpStatus.FORBIDDEN).json({ msg: 'Error' });
+      });
   }
 
   @Get()
-  getAll() {
-    return `Se regreso todos los mensajes`;
+  getAll(@Res() response) {
+    this.mensajeServices
+      .getAll()
+      .then(res => {
+        response.status(HttpStatus.OK).json(res);
+      })
+      .catch(err => {
+        response.status(HttpStatus.FORBIDDEN).json({ msg: 'Error' });
+      });
   }
 
   @Put(':id')
-  update(@Body() updateDto: CreateDto) {
-    return `mensaje actualizado`;
+  update(
+    @Body() updateDto: CreateDto,
+    @Res() response,
+    @Param('id') idMensaje,
+  ) {
+    this.mensajeServices
+      .updateMensaje(idMensaje, updateDto)
+      .then(msg => {
+        response.status(HttpStatus.OK).json({ msg: 'Register updated' });
+      })
+      .catch(err => {
+        response.status(HttpStatus.FORBIDDEN).json({ msg: 'Error' });
+      });
   }
 
   @Delete(':id')
-  delete() {
-    return `mensaje eliminado`;
+  delete(@Res() response, @Param('id') idMensaje) {
+    this.mensajeServices
+      .delete(idMensaje)
+      .then(msg => {
+        response.status(HttpStatus.OK).json({ msg: 'Register deleted' });
+      })
+      .catch(err => {
+        response.status(HttpStatus.FORBIDDEN).json({ msg: 'Error' });
+      });
   }
 }
