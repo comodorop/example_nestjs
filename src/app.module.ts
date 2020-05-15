@@ -3,6 +3,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MensajesController } from './mensajes/mensajes.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
+{
+}
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -12,7 +14,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       username: 'root',
       password: '123456',
       database: 'nest',
-      entities: [],
+      entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
     }),
   ],
